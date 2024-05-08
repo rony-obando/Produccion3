@@ -2,31 +2,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:frontendapp/presentation/calculations/CMcalculation.dart';
+import 'package:frontendapp/presentation/providers/Mc_provider.dart';
 import 'package:frontendapp/presentation/widgets/show_result_widget.dart';
+import 'package:provider/provider.dart';
 
 const route = '/notification-save';
 
-class CorrMain extends StatefulWidget {
+class CorrMain extends StatelessWidget {
   const CorrMain({super.key});
 
   @override
   // ignore: library_private_types_in_public_api
-  CorrectiveMaintenance createState() => CorrectiveMaintenance();
-}
-
-class CorrectiveMaintenance extends State<CorrMain> {
-  double numerofallas = 0;
-  double duraciontarea = 0;
-  double costohoratrabajo = 0;
-  double respuestos = 0;
-  double costooperacionales = 0;
-  double retrasologistico = 0;
-  double costoparada = 0;
-  double costofallaunica = 0;
-  double resultado = 0;
-  bool showAdditionalFields = false;
-  @override
   Widget build(BuildContext context) {
+
+    Mc_provider watch = context.watch<Mc_provider>(); 
+    double resultado = 0;
+
     return Container(
       margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.03),
       padding: EdgeInsets.symmetric(
@@ -39,25 +30,18 @@ class CorrectiveMaintenance extends State<CorrMain> {
             children: [
               const Text('Calcular el número de fallas',style: TextStyle(fontSize: 17),),
               Checkbox(
-                value: showAdditionalFields,
+                value: watch.showAdditionalFields,
                 onChanged: (value) {
-                  setState(() {
-                    showAdditionalFields = value!;
-                  });
+                  context.read<Mc_provider>().setCMprops(showAdditionalFields: value);
                 },
               ),
             ],
           ),
-          if (!showAdditionalFields)
+          if (!watch.showAdditionalFields)
             TextField(
               keyboardType: TextInputType.number,
               onChanged: (text) {
-                setState(() {
-                  try {
-                    numerofallas = double.tryParse(text)!;
-                    // ignore: empty_catches
-                  } catch (e) {}
-                });
+                context.read<Mc_provider>().setCMprops(numerofallas: double.tryParse(text.toString()));
               },
               inputFormatters: <TextInputFormatter>[
                 FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
@@ -73,12 +57,7 @@ class CorrectiveMaintenance extends State<CorrMain> {
           TextField(
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
             onChanged: (text) {
-              setState(() {
-                try {
-                  duraciontarea = double.tryParse(text)!;
-                  // ignore: empty_catches
-                } catch (e) {}
-              });
+              context.read<Mc_provider>().setCMprops(duraciontarea: double.tryParse(text.toString()));
             },
             inputFormatters: <TextInputFormatter>[
               FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
@@ -92,12 +71,7 @@ class CorrectiveMaintenance extends State<CorrMain> {
           TextField(
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
             onChanged: (text) {
-              setState(() {
-                try {
-                  costohoratrabajo = double.tryParse(text)!;
-                  // ignore: empty_catches
-                } catch (e) {}
-              });
+              context.read<Mc_provider>().setCMprops(costohoratrabajo: double.tryParse(text.toString()));
             },
             inputFormatters: <TextInputFormatter>[
               FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
@@ -111,12 +85,7 @@ class CorrectiveMaintenance extends State<CorrMain> {
           TextField(
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
             onChanged: (text) {
-              setState(() {
-                try {
-                  respuestos = double.tryParse(text)!;
-                  // ignore: empty_catches
-                } catch (e) {}
-              });
+              context.read<Mc_provider>().setCMprops(respuestos: double.tryParse(text.toString()));
             },
             inputFormatters: <TextInputFormatter>[
               FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
@@ -130,12 +99,7 @@ class CorrectiveMaintenance extends State<CorrMain> {
           TextField(
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
             onChanged: (text) {
-              setState(() {
-                try {
-                  costooperacionales = double.tryParse(text)!;
-                  // ignore: empty_catches
-                } catch (e) {}
-              });
+              context.read<Mc_provider>().setCMprops(costooperacionales: double.tryParse(text.toString()));
             },
             inputFormatters: <TextInputFormatter>[
               FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
@@ -149,12 +113,7 @@ class CorrectiveMaintenance extends State<CorrMain> {
           TextField(
             keyboardType: TextInputType.number,
             onChanged: (text) {
-              setState(() {
-                try {
-                  retrasologistico = double.tryParse(text)!;
-                  // ignore: empty_catches
-                } catch (e) {}
-              });
+              context.read<Mc_provider>().setCMprops(retrasologistico: double.tryParse(text.toString()));
             },
             inputFormatters: <TextInputFormatter>[
               FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
@@ -168,12 +127,7 @@ class CorrectiveMaintenance extends State<CorrMain> {
           TextField(
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
             onChanged: (text) {
-              setState(() {
-                try {
-                  costoparada = double.tryParse(text)!;
-                  // ignore: empty_catches
-                } catch (e) {}
-              });
+              context.read<Mc_provider>().setCMprops(costoparada: double.tryParse(text.toString()));
             },
             inputFormatters: <TextInputFormatter>[
               FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
@@ -187,12 +141,7 @@ class CorrectiveMaintenance extends State<CorrMain> {
           TextField(
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
             onChanged: (text) {
-              setState(() {
-                try {
-                  costofallaunica = double.tryParse(text)!;
-                  // ignore: empty_catches
-                } catch (e) {}
-              });
+              context.read<Mc_provider>().setCMprops(costofallaunica: double.tryParse(text.toString()));
             },
             inputFormatters: <TextInputFormatter>[
               FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
@@ -205,32 +154,30 @@ class CorrectiveMaintenance extends State<CorrMain> {
           const SizedBox(height: 20),
           ElevatedButton(
             onPressed: () {
-              setState(() {
-                if (showAdditionalFields) {
+                if (watch.showAdditionalFields) {
                   resultado = Calcular_Resultado(
-                      numero_fallas(horasmantenimiento, mtbf),
-                      duraciontarea,
-                      costohoratrabajo,
-                      respuestos,
-                      costooperacionales,
-                      retrasologistico,
-                      costoparada,
-                      costofallaunica,
-                      resultado);
+                      numero_fallas(watch.horasmantenimiento, watch.mtbf),
+                      watch.duraciontarea,
+                      watch.costohoratrabajo,
+                      watch.respuestos,
+                      watch.costooperacionales,
+                      watch.retrasologistico,
+                      watch.costoparada,
+                      watch.costofallaunica,
+                      watch.resultado);
                 } else {
                   resultado = Calcular_Resultado(
-                      numerofallas,
-                      duraciontarea,
-                      costohoratrabajo,
-                      respuestos,
-                      costooperacionales,
-                      retrasologistico,
-                      costoparada,
-                      costofallaunica,
-                      resultado);
+                      watch.numerofallas,
+                      watch.duraciontarea,
+                      watch.costohoratrabajo,
+                      watch.respuestos,
+                      watch.costooperacionales,
+                      watch.retrasologistico,
+                      watch.costoparada,
+                      watch.costofallaunica,
+                      watch.resultado);
                 }
-              });
-              show_result_widget.show(context, 'Mantenimiento Correctivo',
+              show_result_widget.show(context, 'CM',
                   'El resultado es: $resultado', resultado);
             },
             child: const Text('Calcular'),
@@ -242,17 +189,9 @@ class CorrectiveMaintenance extends State<CorrMain> {
   }
 }
 
-int horasmantenimiento = 0;
-double mtbf = 0;
-
-class AdditionalFields extends StatefulWidget {
+class AdditionalFields extends StatelessWidget {
   const AdditionalFields({super.key});
 
-  @override
-  State<AdditionalFields> createState() => _AdditionalFieldsState();
-}
-
-class _AdditionalFieldsState extends State<AdditionalFields> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -261,12 +200,7 @@ class _AdditionalFieldsState extends State<AdditionalFields> {
         TextField(
           keyboardType: TextInputType.number,
           onChanged: (text) {
-            setState(() {
-              try {
-                horasmantenimiento = int.tryParse(text)!;
-                // ignore: empty_catches
-              } catch (e) {}
-            });
+            context.read<Mc_provider>().setCMprops(horasmantenimiento: int.tryParse(text.toString()));
           },
           inputFormatters: <TextInputFormatter>[
             FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
@@ -280,12 +214,7 @@ class _AdditionalFieldsState extends State<AdditionalFields> {
         TextField(
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           onChanged: (text) {
-            setState(() {
-              try {
-                mtbf = double.tryParse(text)!;
-                // ignore: empty_catches
-              } catch (e) {}
-            });
+            context.read<Mc_provider>().setCMprops(mtbf: double.tryParse(text.toString()));
           },
           inputFormatters: <TextInputFormatter>[
             FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),

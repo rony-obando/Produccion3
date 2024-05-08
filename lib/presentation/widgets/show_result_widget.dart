@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:frontendapp/presentation/providers/local_notification_provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+var supabase = Supabase.instance.client;
 
 // ignore: camel_case_types
 class show_result_widget {
+  
   static void show(BuildContext context,String method, String dialog, double result) {
     showDialog(
       context: context,
@@ -32,9 +36,11 @@ class show_result_widget {
                 ),
                 const SizedBox(width: 8),
                 TextButton(
-                  onPressed: () {
+                  onPressed: () async {
+                    await printNotifications(method,result);
+                    await supabase.from(method).insert({'resultado':result.toString()});
+                    // ignore: use_build_context_synchronously
                     Navigator.of(context).pop();
-                    printNotifications(method,result);
                   },
                   child: const Text('Guardar'),
                   

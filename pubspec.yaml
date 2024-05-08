@@ -42,6 +42,10 @@ dependencies:
   flutter_local_notifications: ^17.0.0
   behaviour: ^3.0.0
   firebase_auth: ^4.19.0
+  http: ^1.2.1
+  graphview: ^1.2.0
+  supabase_flutter: ^2.5.1
+  webview_flutter: ^4.7.0
 
 dev_dependencies:
   flutter_test:

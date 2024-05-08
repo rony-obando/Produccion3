@@ -2,29 +2,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:frontendapp/presentation/calculations/CMcalculation.dart';
+import 'package:frontendapp/presentation/providers/Eoq_Provider.dart';
 import 'package:frontendapp/presentation/widgets/show_result_widget.dart';
+import 'package:provider/provider.dart';
 
 const route = '/notification-save';
 
 // ignore: camel_case_types
-class eoq_widget extends StatefulWidget {
+class eoq_widget extends StatelessWidget {
   const eoq_widget({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
-  Eoq createState() => Eoq();
-}
-
-class Eoq extends State<eoq_widget> {
-  double demanda = 0;
-  double costopedidos = 0;
-  double costomantenimiento = 0;
-  int resultado = 0;
-  String dropdownValue = '/Dia';
-  int periodo = 365;
-
-  @override
   Widget build(BuildContext context) {
+
+    Eoq_Provider watch = context.watch<Eoq_Provider>();
+    String dropdownValue = '/Dia';
+    int resultado = 0;
+
     return Container(
       margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.03),
       padding: EdgeInsets.symmetric(
@@ -42,12 +36,7 @@ class Eoq extends State<eoq_widget> {
                 child: TextField(
                   keyboardType: TextInputType.number,
                   onChanged: (text) {
-                    setState(() {
-                      try {
-                        demanda = double.tryParse(text)!;
-                        // ignore: empty_catches
-                      } catch (e) {}
-                    });
+                    context.read<Eoq_Provider>().setEoqProps(demanda: double.tryParse(text));
                   },
                   inputFormatters: <TextInputFormatter>[
                     FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
@@ -61,20 +50,10 @@ class Eoq extends State<eoq_widget> {
             ),
             Flexible(
               child: DropdownButton<String>(
-                value: dropdownValue,
+                value: watch.newValue,
                 onChanged: (newValue) {
-                  setState(() {
-                    dropdownValue = newValue!;
-                    if (newValue == '/Dia') {
-                      periodo = 365;
-                    } else if (newValue == '/Semana') {
-                      periodo = 52;
-                    } else if (newValue == '/Mes') {
-                      periodo = 12;
-                    } else {
-                      periodo = 1;
-                    }
-                  });
+                  context.read<Eoq_Provider>().setEoqProps(newValue: newValue);
+                  
                 },
                 items: <String>['/Dia', '/Semana', '/Mes', '/Año']
                     .map<DropdownMenuItem<String>>((String value) {
@@ -90,12 +69,7 @@ class Eoq extends State<eoq_widget> {
           TextField(
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
             onChanged: (text) {
-              setState(() {
-                try {
-                  costopedidos = double.tryParse(text)!;
-                  // ignore: empty_catches
-                } catch (e) {}
-              });
+              context.read<Eoq_Provider>().setEoqProps(costopedidos: double.tryParse(text));
             },
             inputFormatters: <TextInputFormatter>[
               FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
@@ -109,12 +83,7 @@ class Eoq extends State<eoq_widget> {
           TextField(
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
             onChanged: (text) {
-              setState(() {
-                try {
-                  costomantenimiento = double.tryParse(text)!;
-                  // ignore: empty_catches
-                } catch (e) {}
-              });
+              context.read<Eoq_Provider>().setEoqProps(costomantenimiento: double.tryParse(text));
             },
             inputFormatters: <TextInputFormatter>[
               FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
@@ -129,10 +98,8 @@ class Eoq extends State<eoq_widget> {
           ElevatedButton(
             onPressed: () {
               try {
-                setState(() {
                   resultado = Calcular_EOQ(
-                      demanda, costopedidos, costomantenimiento, periodo);
-                });
+                      watch.demanda, watch.costopedidos, watch.costomantenimiento, watch.periodo);
                 show_result_widget.show(
                     context,
                     'EOQ',
@@ -167,3 +134,4 @@ class Eoq extends State<eoq_widget> {
     );
   }
 }
+

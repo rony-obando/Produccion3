@@ -1,34 +1,28 @@
 // ignore_for_file: file_names
 import 'package:flutter/material.dart';
+import 'package:frontendapp/presentation/providers/menus_provider.dart';
 import 'package:frontendapp/presentation/widgets/Corrective_maintenance.dart';
 import 'package:frontendapp/presentation/widgets/eoq_widget.dart';
 import 'package:frontendapp/presentation/widgets/inventory_rotation_widget.dart';
+import 'package:provider/provider.dart';
 
-class MenuSc extends StatefulWidget {
-  const MenuSc({super.key});
-
-  @override
-  // ignore: library_private_types_in_public_api
-  MenuScreen createState() => MenuScreen();
-}
-
-class MenuScreen extends State<MenuSc> {
-
- 
-
+class MenuSc extends StatelessWidget {
+   MenuSc({super.key});
   late String text = 'Selecciona una opción en el menú.';
-  bool showTextBoxes = false;
   dynamic widg;
   
 
   @override
   Widget build(BuildContext context) {
+
+    MenusProvider watch = context.watch<MenusProvider>();
+
     return Scaffold(
       appBar: AppBar (
         leading:  Padding(
         padding: const EdgeInsets.all(4.0),
         child: Image.asset(
-             'assets/icon/logouni12.png', // Ruta de la imagen en tu proyecto
+             'assets/icon/logouni12.png',
             
            ),
         ),
@@ -44,23 +38,22 @@ class MenuScreen extends State<MenuSc> {
                 value: eoq_widget(),
                 child: Text('EOQ'),
               ),
-              const PopupMenuItem(
+               PopupMenuItem(
                 value: rotation_widget(),
-                child: Text('Inventario Promedio'),
+                child: const Text('Inventario Promedio'),
               ),
             ],
             onSelected: (value) {
               widg = value;
-                setState(() {
-                showTextBoxes = true;
-              });
+                context.read<MenusProvider>().setMenusProps(showTextBoxes: true);
             },
           ),
         ],
       ),
       body: SingleChildScrollView( 
-            child: showTextBoxes? widg: Center(
+            child: watch.showTextBoxes? widg: Center(
               child: Text(text),
+              
             ),
       ),
     );

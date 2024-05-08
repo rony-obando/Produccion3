@@ -11,6 +11,7 @@ class login_screen extends StatefulWidget {
   State<login_screen> createState() => _login_screenState();
 }
 
+// ignore: camel_case_types
 class _login_screenState extends State<login_screen> {
 
 
@@ -34,9 +35,9 @@ class _login_screenState extends State<login_screen> {
             
              const SizedBox(height: 50.0),
             Image.asset(
-              'assets/icon/logouni12.png', // Ruta de la imagen en tu proyecto
-              width: 250, // Ancho de la imagen
-              height: 250, // Alto de la imagen
+              'assets/icon/logouni12.png', 
+              width: 250, 
+              height: 250,
             ),
             const SizedBox(height: 50),
              TextField(
@@ -73,15 +74,13 @@ class _login_screenState extends State<login_screen> {
                   },
               obscureText: true,
             ),
-            SizedBox(height: 50),
+            const SizedBox(height: 50),
             Align(
                alignment: Alignment.centerRight,
                child: ElevatedButton(
                  onPressed: () {
                   
-                //  signInWithGoogle();
-
-                 // Navigator.pushNamed(context,'Menu_Screen');
+                 Navigator.pushNamed(context,'Optiosn_Screen');
                  
           // Aquí puedes agregar la lógica para el inicio de sesión
                  },
