@@ -1,10 +1,8 @@
 // ignore_for_file: file_names
 import 'package:flutter/material.dart';
-import 'package:frontendapp/config/domain/entities/Componente.dart';
-import 'package:frontendapp/config/domain/entities/Producto.dart';
-import 'package:frontendapp/config/domain/entities/union.dart';
-import 'package:frontendapp/main.dart';
+import 'package:frontendapp/presentation/children/planeacion_child.dart';
 import 'package:frontendapp/presentation/providers/menus_provider.dart';
+import 'package:frontendapp/presentation/providers/product_provider.dart';
 import 'package:frontendapp/presentation/screens/Menu_others.dart';
 import 'package:frontendapp/presentation/screens/ltc_luc_sreen.dart';
 import 'package:frontendapp/presentation/screens/menu_mrp.dart';
@@ -14,7 +12,6 @@ import 'package:frontendapp/presentation/widgets/buttons_widget.dart';
 import 'package:frontendapp/presentation/widgets/eoq_widget.dart';
 import 'package:frontendapp/presentation/widgets/inventory_rotation_widget.dart';
 import 'package:provider/provider.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class optionsScreen extends StatelessWidget {
   optionsScreen({super.key});
@@ -23,7 +20,7 @@ class optionsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    MenusProvider watch = context.watch<MenusProvider>();
+    //MenusProvider watch = context.watch<MenusProvider>();
 
     return Scaffold(
         appBar: AppBar(
@@ -77,6 +74,7 @@ class optionsScreen extends StatelessWidget {
                   color: Color.fromARGB(255, 197, 229, 255),
                   rounded: 10,
                   function: () {
+                    context.read<ProductProvider>().fetchProducts();
                     navigatioUtil.navigateToScreen(context,MrpScreen());
                   },
                   fontSize: 20,
@@ -109,7 +107,10 @@ class optionsScreen extends StatelessWidget {
                   size: const Size(100, 100),
                   color: Color.fromARGB(255, 197, 229, 255),
                   rounded: 10,
-                  function: () {},
+                  function: () {
+                    
+                    navigatioUtil.navigateToScreen(context,DataEntryScreen());
+                  },
                   fontSize: 20,
                   padding: 0,
                 ),

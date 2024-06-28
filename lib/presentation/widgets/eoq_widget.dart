@@ -103,7 +103,7 @@ class eoq_widget extends StatelessWidget {
                 show_result_widget.show(
                     context,
                     'EOQ',
-                    'La cantidad de pedidos que la empresa deberá realizar es de $resultado unidades para que el inventario no se agote durante el tiempo dentrega',
+                    'La cantidad de pedidos que la empresa deberá realizar es de $resultado unidades para que el inventario no se agote durante el tiempo de entrega',
                     resultado.toDouble());
               } catch (e) {
                 showDialog(

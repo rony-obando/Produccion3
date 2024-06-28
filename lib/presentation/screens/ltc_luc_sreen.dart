@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:frontendapp/presentation/children/ltc_child.dart';
-import 'package:frontendapp/presentation/providers/menus_provider.dart';
+import 'package:frontendapp/presentation/children/luc_child.dart';
+import 'package:frontendapp/presentation/providers/ltc_luc_provider.dart';
 import 'package:frontendapp/presentation/util/getperiodos_util.dart';
 import 'package:frontendapp/presentation/widgets/buttons_widget.dart';
 import 'package:provider/provider.dart';
@@ -15,7 +16,7 @@ class LTCLUCScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    MenusProvider watch = context.watch<MenusProvider>();
+    LtcLucProvider watch = context.watch<LtcLucProvider>();
 
     return Scaffold(
       appBar: AppBar(
@@ -27,10 +28,10 @@ class LTCLUCScreen extends StatelessWidget {
         ),
         title: const Text('Manejo de inventario'),
         actions: [
-          Consumer<MenusProvider>(
+          Consumer<LtcLucProvider>(
             builder: (context, drawerState, child) {
               return IconButton(
-                icon: Icon(Icons.menu),
+                icon: const Icon(Icons.menu),
                 onPressed: () {
                   Scaffold.of(context).openEndDrawer();
                 },
@@ -39,127 +40,43 @@ class LTCLUCScreen extends StatelessWidget {
           )
         ],
       ),
-      body: Column(
-        children: [
-          /*  const SizedBox(height: 20),
-            Flexible(
-              child: ListView.builder(
-                itemCount: watch.numberOfPeriods,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    title: TextField(
-                      //controller: controllers[index],
-                      decoration:
-                          InputDecoration(labelText: 'Input ${index + 1}'),
-                    ),
-                    /* trailing: IconButton(
-              icon: Icon(Icons.remove_circle),
-              onPressed: () => _removeTextField(index),
-            ),*/
-                  );
-                },
-              ), /*ListView.builder(
-                  itemCount: watch.numberOfPeriods,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        margin: EdgeInsets.only(
-                        top: MediaQuery.of(context).size.height * 0.01),
-                    padding: EdgeInsets.symmetric(
-                        horizontal: MediaQuery.of(context).size.width * 0.1),
-                        child: TextField(
-                        decoration: InputDecoration(
-                          labelText: 'Cantidad para el período ${index + 1}',
-                          border: const OutlineInputBorder(),
-                        ),
-                        keyboardType: TextInputType.number,
-                        onChanged: (value) {
-                          final quantity = int.tryParse(value) ?? 0;
-                          context
-                              .read<MenusProvider>()
-                              .setQuantity(index, quantity);
-                        },
-                      ),
-                      ),
-                    );
-                  },
-                ),*/
-            ),
-            SingleChildScrollView(
-              child: Column(
-                //mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    margin: EdgeInsets.only(
-                        top: MediaQuery.of(context).size.height * 0.03),
-                    padding: EdgeInsets.symmetric(
-                        horizontal: MediaQuery.of(context).size.width * 0.1),
-                    child: Column(
-                      children: [
-                        TextField(
-                          expands: false,
-                          keyboardType: TextInputType.number,
-                          onChanged: (text) {},
-                          inputFormatters: <TextInputFormatter>[
-                            FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-                          ],
-                          decoration: const InputDecoration(
-                            labelText: 'Demanda',
-                            border: OutlineInputBorder(),
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                      ],
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const SizedBox(height: 20),
-                      ButtonWidget(
-                        text: 'LTC',
-                        size: const Size(60, 60),
-                        color: const Color.fromARGB(255, 197, 229, 255),
-                        rounded: 10,
-                        function: () {},
-                        fontSize: 15,
-                        padding: 0,
-                      ),
-                      const SizedBox(width: 20),
-                      ButtonWidget(
-                        text: 'LUC',
-                        size: const Size(60, 60),
-                        color: const Color.fromARGB(255, 197, 229, 255),
-                        rounded: 10,
-                        function: () {},
-                        fontSize: 15,
-                        padding: 0,
-                      ),
-                    ],
-                  ),
-                  const SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: LTCchild(),
-                  ),
-                ],
-              ),
-            )*/
-        ],
-      ),
+      body: Consumer<LtcLucProvider>(builder: (context, provider, child) {
+        if (provider.isLoading) {
+          return const SingleChildScrollView(
+              child: Center(
+            child: Text('Agregue datos al menú lateral'),
+          ));
+        }
+        return watch.widg;
+      }),
       endDrawer: Drawer(
         width: MediaQuery.of(context).size.width / 1.7,
         child: Container(
-          //width: MediaQuery.of(context).size.width / 3,
+        
           color: Colors.white,
           child: ListView(
             padding: EdgeInsets.zero,
             children: <Widget>[
-              const DrawerHeader(
-                decoration: BoxDecoration(
-                  color: Colors.blue,
-                ),
-                child: Text('Menú Lateral'),
+              const SizedBox(
+                height: 150,
+                child: DrawerHeader(
+                  decoration: BoxDecoration(
+                    color: Colors.blue,
+                  ),
+                  child: Column(
+                    children: [
+                      SizedBox(height: 20),
+                      Center(
+                    child: Text(
+                      'Agregar datos',
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: Color.fromARGB(255, 236, 233, 233)),
+                    ),
+                  )
+                    ],
+                  )
+                  ),
               ),
               Container(
                   margin: EdgeInsets.only(
@@ -171,9 +88,14 @@ class LTCLUCScreen extends StatelessWidget {
                       TextField(
                         expands: false,
                         keyboardType: TextInputType.number,
-                        onChanged: (text) {},
+                        onChanged: (text) {
+                          context.read<LtcLucProvider>().setLTCLUCProps(
+                              costoorden: double.tryParse(text));
+                        },
+                        controller: watch.getControllerorden,
                         inputFormatters: <TextInputFormatter>[
-                          FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                          FilteringTextInputFormatter.allow(
+                              RegExp(r'^\d+\.?\d{0,2}')),
                         ],
                         decoration: const InputDecoration(
                           labelText: 'Costo de ordenar',
@@ -185,9 +107,14 @@ class LTCLUCScreen extends StatelessWidget {
                       TextField(
                         expands: false,
                         keyboardType: TextInputType.number,
-                        onChanged: (text) {},
+                        onChanged: (text) {
+                          context.read<LtcLucProvider>().setLTCLUCProps(
+                              costomanten: double.tryParse(text));
+                        },
+                        controller: watch.getController,
                         inputFormatters: <TextInputFormatter>[
-                          FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                          FilteringTextInputFormatter.allow(
+                              RegExp(r'^\d+\.?\d{0,2}')),
                         ],
                         decoration: const InputDecoration(
                           labelText: 'Costo de Mantenimiento',
@@ -199,7 +126,13 @@ class LTCLUCScreen extends StatelessWidget {
                       TextField(
                         expands: false,
                         keyboardType: TextInputType.number,
-                        onChanged: (text) {},
+                        onChanged: (text) {
+                          context
+                              .read<LtcLucProvider>()
+                              .setLTCLUCProps(periodos: int.tryParse(text));
+                          context.read<LtcLucProvider>().updateControllers();
+                        },
+                        controller: watch.getcontrollerperido,
                         inputFormatters: <TextInputFormatter>[
                           FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
                         ],
@@ -221,6 +154,47 @@ class LTCLUCScreen extends StatelessWidget {
                         fontSize: 15,
                         padding: 0,
                       ),
+                      const SizedBox(height: 20),
+                      Container(
+                        width: 150,
+                        child: Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            ButtonWidget(
+                              text: 'LUC',
+                              size: const Size(60, 50),
+                              color: const Color.fromARGB(255, 197, 229, 255),
+                              rounded: 0,
+                              function: () {
+                                context
+                                    .read<LtcLucProvider>()
+                                    .setLTCLUCProps(widg: const LUCchild());
+                                context.read<LtcLucProvider>().changeLoading();
+                              },
+                              fontSize: 15,
+                              padding: 10,
+                            ),
+                           
+                            ButtonWidget(
+                              text: 'LTC',
+                              size:  MediaQuery.of(context).orientation == Orientation.portrait? const Size(60, 50): const Size(80, 70),
+                              color: const Color.fromARGB(255, 197, 229, 255),
+                              rounded: 0,
+                              function: () {
+                                context
+                                    .read<LtcLucProvider>()
+                                    .setLTCLUCProps(widg: const LTCChild());
+                                context.read<LtcLucProvider>().changeLoading();
+                              },
+                              fontSize: 15,
+                              padding: 10,
+                            ),
+                          ],
+                        ),
+                      ),
+                      ),
+                      const SizedBox(height: 20),
                     ],
                   )),
             ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontendapp/presentation/children/componentes_child.dart';
+import 'package:frontendapp/presentation/providers/login_provider.dart';
 import 'package:frontendapp/presentation/providers/menus_provider.dart';
 import 'package:frontendapp/presentation/providers/product_provider.dart';
 import 'package:frontendapp/methods/mrp_screen.dart';
@@ -14,9 +15,10 @@ class MrpScreen extends StatelessWidget {
    MrpScreen({super.key});
    dynamic widg;
     String text = 'Selecciona una opción en el menú.';
-
+    
   @override
   Widget build(BuildContext context) {
+    context.read<ProductProvider>().setUsuario(context.watch<LoginProvider>().idUsuario);
      MenusProvider watch = context.watch<MenusProvider>();
     return Consumer<ProductProvider>(
       builder: (context, provider, child) {
@@ -25,7 +27,7 @@ class MrpScreen extends StatelessWidget {
             imageUrl: 'assets/icon/logouni12.png',
           );
         }
-
+        
         return Scaffold(
           appBar: AppBar(
             leading: Padding(
@@ -53,9 +55,13 @@ class MrpScreen extends StatelessWidget {
                   value: AddComponent(),
                   child: Text('Agregar componentes'),
                 ),
-                const PopupMenuItem(
-                  value: AddProductos(),
-                  child: Text('Agregar Uniones'),
+                 PopupMenuItem(
+                  onTap: () {
+                    context.read<ProductProvider>().setProductprops(text1: '');
+                    context.read<ProductProvider>().setProductprops(cantidad: 0);
+                  },
+                  value: const AddProductos(),
+                  child: const Text('Agregar Uniones'),
                 ),
               ],
               onSelected: (value) {
@@ -67,7 +73,7 @@ class MrpScreen extends StatelessWidget {
           
           ),
           body: SingleChildScrollView( 
-            child: watch.showMrpMenu? widg:  Center(
+            child: watch.showMrpMenu? widg ?? Center(child: Text(text)):  Center(
               child: Text(text),
             ),
         ));

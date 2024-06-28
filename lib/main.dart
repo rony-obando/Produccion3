@@ -3,10 +3,17 @@ import 'package:frontendapp/config/domain/entities/Componente.dart';
 import 'package:frontendapp/config/domain/entities/Producto.dart';
 import 'package:frontendapp/config/domain/entities/union.dart';
 import 'package:frontendapp/config/themes/app_theme.dart';
+import 'package:frontendapp/presentation/children/kanbanes_child.dart';
 import 'package:frontendapp/presentation/providers/Eoq_Provider.dart';
 import 'package:frontendapp/presentation/providers/Mc_provider.dart';
 import 'package:frontendapp/presentation/providers/inventory_rotation.provider.dart';
+import 'package:frontendapp/presentation/providers/kanbanes_provider.dart';
+import 'package:frontendapp/presentation/providers/local_notification_provider.dart';
+import 'package:frontendapp/presentation/providers/login_provider.dart';
+import 'package:frontendapp/presentation/providers/ltc_luc_provider.dart';
 import 'package:frontendapp/presentation/providers/menus_provider.dart';
+import 'package:frontendapp/presentation/providers/numbercontainer_provider.dart';
+import 'package:frontendapp/presentation/providers/planeacion_provider.dart';
 import 'package:frontendapp/presentation/providers/product_provider.dart';
 import 'package:frontendapp/presentation/providers/push_notification_provider.dart';
 import 'package:frontendapp/presentation/screens/Menu_others.dart';
@@ -17,6 +24,9 @@ import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:timezone/data/latest_all.dart' as tz;
+import 'package:permission_handler/permission_handler.dart';
+
 
 final pushnotification = pushNotificationProvider();
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -66,7 +76,12 @@ List<Componente> componentes = [];
 List<Union> unions = [];
 
 void main() async {
+  
   WidgetsFlutterBinding.ensureInitialized();
+  tz.initializeTimeZones();
+  await initNotifications();
+  
+  
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -76,11 +91,15 @@ void main() async {
     anonKey:
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBvc25rdXR4aWl6aHVtb2xxcnhvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTM5ODk1MTQsImV4cCI6MjAyOTU2NTUxNH0.VY1kdn2ULW84WheJZbS96qWThzzk96a3ef6F8a-e4h0',
   );
-  await pushnotification.initNotifications();
+//  await pushnotification.initNotifications();
+
+  if (await Permission.notification.request().isGranted) {
+    runApp(MyApp());
+  } else {
+    print('Permisos de notificación denegados');
+  }
 
   
-
-  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -94,11 +113,17 @@ class MyApp extends StatelessWidget {
     
     return MultiProvider(
         providers: [
+          ChangeNotifierProvider(create: (_) => LoginProvider()),
           ChangeNotifierProvider(create: (_) => Mc_provider()),
           ChangeNotifierProvider(create: (_) => Inventoryprovider()),
           ChangeNotifierProvider(create: (_) => Eoq_Provider()),
           ChangeNotifierProvider(create: (_) => ProductProvider()),
           ChangeNotifierProvider(create: (_) => MenusProvider()),
+          ChangeNotifierProvider(create: (_) => LtcLucProvider()),
+          ChangeNotifierProvider(create: (_) => NumberContainerProvider()),
+          ChangeNotifierProvider(create: (_) => KanbanesProvider()),
+          ChangeNotifierProvider(create: (_) => PlaneacioProvider()),
+          
         ],
         builder: (context, _) {
           return MaterialApp(
@@ -107,10 +132,11 @@ class MyApp extends StatelessWidget {
             theme: AppTheme(selectedColor: 1).theme(),
             initialRoute: 'home',
             routes: {
-              'home': (_) => const login_screen(),
+              'home': (_) =>  login_screen(),
               'Menu_Screen': (_) => MenuSc(),
               'MRP_Screen': (_) => MrpScreen(),
               'Optiosn_Screen': (_) => optionsScreen(),
+              'Kanbanes': (_) => const KanbanesChild()
             },
           );
         });

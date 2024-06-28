@@ -51,3 +51,7 @@ int inventory_rotation(int demanda, int ss, int ciclo, int cantidadpedida,bool f
   rotacion = (demanda / invpromedio).round();
   return rotacion==0?1:rotacion;
 }
+
+int cantidad_recipientes(int demanda, int tamano, double tiempo){
+  return ((demanda*tiempo)/(60*tamano)).round();
+}

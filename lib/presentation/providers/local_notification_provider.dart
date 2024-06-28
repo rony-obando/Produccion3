@@ -4,6 +4,8 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterL
 
 Future<void> initNotifications() async {
 
+  
+
   const AndroidInitializationSettings androidInitializationSettings =
   AndroidInitializationSettings('logouni12');
 
@@ -22,7 +24,9 @@ Future<void> initNotifications() async {
 
 Future<void> printNotifications(String method, double result) async{
   const AndroidNotificationDetails androidNotificationDetails =
-  AndroidNotificationDetails('channelId', 'channelName',icon: 'logouni12');
+  AndroidNotificationDetails('channelIdxd', 'channelNamexd',icon: 'logouni12',importance: Importance.max,
+      priority: Priority.high,
+      showWhen: false,);
 
   const NotificationDetails notificationDetails = NotificationDetails(
     android: androidNotificationDetails,
@@ -34,6 +38,7 @@ Future<void> printNotifications(String method, double result) async{
     'Calculo registrado', 
     'se ha registrado el resultado $result del calculo $method', 
     notificationDetails,
+    payload: 'item x',
     
     );
 }

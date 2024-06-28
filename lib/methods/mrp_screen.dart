@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frontendapp/presentation/children/demanda_mrp_child.dart';
+import 'package:frontendapp/presentation/providers/login_provider.dart';
 import 'package:frontendapp/presentation/providers/product_provider.dart';
 import 'package:frontendapp/services/mermaidchart_services.dart';
 import 'package:provider/provider.dart';
@@ -78,15 +80,32 @@ class DataTableWidget extends StatelessWidget {
               },
               child: const Text('Borrar'),
             ),
-            SimpleDialogOption(
+           Container(child: provider.noUnions(product['id'])? const Text(''):
+           Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SimpleDialogOption(
               onPressed: () async {
                 provider.setGraphProps(product['id']);
                 Navigator.pop(context);
               
-                navigatioUtil.navigateToScreen(context, MyApp1());
+                navigatioUtil.navigateToScreen(context, const MyApp1());
               },
               child: const Text('Mostrar el diagrama arborar'),
             ),
+            SimpleDialogOption(
+              onPressed: () async {
+                provider.ShowDemanda(product['id']);
+                Navigator.pop(context);
+                navigatioUtil.navigateToScreen(context, const DemandaChild());
+              },
+              child: const Text('Multiplicar Demanda'),
+            ),
+            ],
+           )
+           
+           ,),
+            
           ],
         );
       },
