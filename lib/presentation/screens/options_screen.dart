@@ -1,6 +1,7 @@
 // ignore_for_file: file_names
 import 'package:flutter/material.dart';
-import 'package:frontendapp/presentation/children/planeacion_child.dart';
+import 'package:frontendapp/presentation/children/graficalineal_child.dart';
+import 'package:frontendapp/presentation/children/regresionlineal_child.dart';
 import 'package:frontendapp/presentation/providers/menus_provider.dart';
 import 'package:frontendapp/presentation/providers/product_provider.dart';
 import 'package:frontendapp/presentation/screens/Menu_others.dart';
@@ -21,7 +22,7 @@ class optionsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //MenusProvider watch = context.watch<MenusProvider>();
-
+    Size screenSize = MediaQuery.of(context).size;
     return Scaffold(
         appBar: AppBar(
           leading: Padding(
@@ -64,52 +65,61 @@ class optionsScreen extends StatelessWidget {
             const SizedBox(height: 20),
             SingleChildScrollView(
                 child: Center(
-                    child: Wrap(
-              spacing: 8.0,
-              runSpacing: 10.0,
+                  
+                    child: Column(
               children: [
                 ButtonWidget(
                   text: 'MRP',
-                  size: const Size(100, 100),
+                  size: Size(screenSize.width * 0.8, 50),
                   color: Color.fromARGB(255, 197, 229, 255),
                   rounded: 10,
                   function: () {
                     context.read<ProductProvider>().fetchProducts();
-                    navigatioUtil.navigateToScreen(context,MrpScreen());
+                    navigatioUtil.navigateToScreen(context, MrpScreen());
                   },
                   fontSize: 20,
                   padding: 0,
                 ),
+                const SizedBox(
+                  height: 20,
+                ),
                 ButtonWidget(
                   text: 'LUC - LTC',
-                  size: const Size(150, 100),
+                  size: Size(screenSize.width * 0.8, 50),
                   color: Color.fromARGB(255, 197, 229, 255),
                   rounded: 10,
                   function: () async {
-                    navigatioUtil.navigateToScreen(context,LTCLUCScreen());
+                    navigatioUtil.navigateToScreen(context, LTCLUCScreen());
                   },
                   fontSize: 18,
                   padding: 0,
                 ),
+                const SizedBox(
+                  height: 20,
+                ),
                 ButtonWidget(
-                  text: 'otros calculos',
-                  size: const Size(150, 100),
+                  text: 'Regresión lineal',
+                  size: Size(screenSize.width * 0.8, 50),
                   color: Color.fromARGB(255, 197, 229, 255),
                   rounded: 10,
                   function: () {
-                    navigatioUtil.navigateToScreen(context,MenuSc());
+                    navigatioUtil.navigateToScreen(
+                        context, LinearRegressionScreen());
+                    // navigatioUtil.navigateToScreen(context,DataEntryScreen());
                   },
                   fontSize: 20,
                   padding: 0,
                 ),
+                const SizedBox(
+                  height: 20,
+                ),
                 ButtonWidget(
-                  text: '?????',
-                  size: const Size(100, 100),
+                  text: 'Otros calculos',
+                  size: Size(screenSize.width * 0.8, 50),
                   color: Color.fromARGB(255, 197, 229, 255),
                   rounded: 10,
                   function: () {
-                    
-                    navigatioUtil.navigateToScreen(context,DataEntryScreen());
+                    navigatioUtil.navigateToScreen(context, MenuSc());
                   },
                   fontSize: 20,
                   padding: 0,
@@ -119,6 +129,4 @@ class optionsScreen extends StatelessWidget {
           ],
         ));
   }
-
 }
-

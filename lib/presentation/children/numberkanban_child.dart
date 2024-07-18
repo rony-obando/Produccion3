@@ -210,7 +210,7 @@ class NumberKanbans extends StatelessWidget {
                 );
               }
             },
-            fontSize: 18,
+            fontSize: 16,
             padding: 0,
           ),
           const SizedBox(height: 20),

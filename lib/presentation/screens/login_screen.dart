@@ -203,7 +203,7 @@ class _LoginScreenState extends State<login_screen> {
                 const SizedBox(width: 10),
                 ElevatedButton(
                   style: TextButton.styleFrom(
-                    fixedSize: const Size(90, 5),
+                    fixedSize: const Size(100, 5),
                     shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(5)),
                     ),

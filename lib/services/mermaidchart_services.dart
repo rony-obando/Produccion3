@@ -65,7 +65,7 @@ class MyApp1 extends StatelessWidget {
             ],
           ),
           child: Text(
-            watch1.nombres.where((element) => element.contains(a)).isEmpty?a:watch1.nombres.where((element) => element.contains(a)).first,
+            watch1.nombres.where((element) =>watch1.existeString(element, a)).isEmpty?a:watch1.nombres.where((element) => watch1.existeString(element, a)).first,
             style: const TextStyle(fontSize: 15),
           )),
     );

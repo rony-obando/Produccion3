@@ -79,6 +79,22 @@ class ProductProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+
+  String getdemandaprom(){
+    String demsp='';
+    for(int i =0; i<dems.length; i++){
+      if(i==0){
+        demsp = '${dems[i].resultado}'; 
+      }else{
+        demsp = '$demsp + ${dems[i].resultado}'; 
+      }
+    }
+    demsp ='$demsp / ${dems.length}';
+
+    demsp = '$demsp = ${dems.map((e) => e.resultado).reduce((value, element) => value+element)/dems.length}';
+    return demsp;
+  }
+
   // ignore: non_constant_identifier_names
   Future<void> setGraphProps(IdProducto) async {
     if (IdProducto != null) {
@@ -243,6 +259,30 @@ class ProductProvider extends ChangeNotifier {
     return components;
   }
 
+    bool existeString(String nombre, String original){
+
+    int index = nombre.indexOf('(');
+    String cadena1 = '';
+    String cadena2 = nombre;
+    if(index!=-1){
+      cadena1 = cadena2.substring(0,index-1);
+      if(compararCadenasSinEspacios(cadena1, original)){
+        return true;
+      }
+      
+    }else{
+      return false;
+    }
+
+    return false;
+  }
+
+  bool compararCadenasSinEspacios(String cadena1, String cadena2) {
+  String cadena1SinEspacios = cadena1.replaceAll(' ', '');
+  String cadena2SinEspacios = cadena2.replaceAll(' ', '');
+  return cadena1SinEspacios == cadena2SinEspacios;
+}
+
   Componente findComponentById(int idComponente) {
     return comps.firstWhere((c) => c.idComponente == idComponente);
   }
@@ -260,7 +300,7 @@ class ProductProvider extends ChangeNotifier {
       if (!componente.subcomponentes
           .any((c) => c.idComponente == subcomponente.idComponente)) {
         if (_nombres
-            .where((element) => element.contains(subcomponente.nombre))
+            .where((element) =>existeString(element, subcomponente.nombre))
             .isEmpty) {
           _nombres.add('${subcomponente.nombre} (${union.CantidadHijo})');
           // rms.add(idRama);
@@ -272,7 +312,7 @@ class ProductProvider extends ChangeNotifier {
           cantidades.removeLast();
         } else {
           for (int i = 0; i < _nombres.length; i++) {
-            if (_nombres[i].contains(subcomponente.nombre)) {
+            if (existeString(_nombres[i], subcomponente.nombre)) {
               _nombres[i] = '${nombres[i]} (${union.CantidadHijo})';
               rms.add(idRama);
               cantidades.add(union.CantidadHijo);
@@ -340,9 +380,29 @@ class ProductProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool tieneciclo(Componente padre, Componente hijo){
+    if(padre.subcomponentes.isEmpty){
+      return false;
+    }
+    for(var a in padre.subcomponentes){
+      if(a.idComponente == hijo.idComponente){
+         Exception('No se puede realizar la union!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+         return true;
+      }
+    }
+
+    for(var a in padre.subcomponentes){
+      
+      tieneciclo(a, hijo);
+    }
+    return false;
+  }
+
   Future<void> addUnions(
       String padre, String hijo, cantidad1, bool PadreEsProducto, Node? parent) async {
+
     if (prd.where((element) => element.nombre == padre).isNotEmpty) {
+      
       final response = await client.from('Union').insert({
         'idHijo':
             comps.firstWhere((element) => element.nombre == hijo).idComponente,
@@ -358,6 +418,7 @@ class ProductProvider extends ChangeNotifier {
         notifyListeners();
       }
     } else {
+      tieneciclo(comps.firstWhere((element) => element.nombre == padre), comps.firstWhere((element) => element.nombre == hijo));
       final response = await client.from('Union').insert({
         'idHijo':
             comps.firstWhere((element) => element.nombre == hijo).idComponente,
@@ -383,10 +444,7 @@ class ProductProvider extends ChangeNotifier {
      
   }
   void addSubcomponentes1(Componente componente) {
-    var relevantUnions = unn
-        .where(
-            (u) => u.idPadre == componente.idComponente && !u.PadreEsProducto)
-        .toList();
+    var relevantUnions = unn.where((u) => u.idPadre == componente.idComponente && !u.PadreEsProducto).toList();
     uniondemanda.addAll(relevantUnions);
     for (var union in relevantUnions) {
       Componente subcomponente = findComponentById(union.idHijo);
@@ -394,13 +452,13 @@ class ProductProvider extends ChangeNotifier {
       if (!componente.subcomponentes
           .any((c) => c.idComponente == subcomponente.idComponente)) {
         if (_nombres
-            .where((element) => element.contains(subcomponente.nombre))
+            .where((element) =>existeString(element, subcomponente.nombre))
             .isEmpty) {
           _nombres.add('${subcomponente.nombre} (${union.CantidadHijo})');
 
         } else {
           for (int i = 0; i < _nombres.length; i++) {
-            if (_nombres[i].contains(subcomponente.nombre)) {
+            if (existeString(_nombres[i], subcomponente.nombre)) {
               _nombres[i] = '${nombres[i]} (${union.CantidadHijo})';
            
             }

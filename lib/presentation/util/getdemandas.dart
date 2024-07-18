@@ -5,104 +5,118 @@ import 'package:provider/provider.dart';
 
 class GetDemandas {
   static void show(BuildContext context) {
-    showDialog(
+    final KanbanesProvider watch = Provider.of<KanbanesProvider>(context, listen: false);
+
+    if (watch.periodos == 0) {
+      showDialog(
         context: context,
         builder: (BuildContext context) {
-          KanbanesProvider watch = context.watch<KanbanesProvider>();
-          if(watch.periodos == 0){
-            
-                    return AlertDialog(
-                      // backgroundColor: const Color.fromARGB(255, 215, 172, 169),
-                      title: const Row(
-                        children: [
-                          Icon(Icons.error, color: Colors.red),
-                          Text(
-                            'Error',
-                            style: TextStyle(
-                                color: Colors.red, fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                      content: const Text(
-                       'Agregue cantidad de períodos',
-                        style: TextStyle(fontSize: 15),
-                        textAlign: TextAlign.center,
-                      ),
-                      actions: <Widget>[
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: const Text(
-                            'Cerrar',
-                          ),
-                        ),
-                      ],
-                    );
-                 
-          }else{
-            return AlertDialog(
-            title: const Center(
-              child: Text(
-                'Agregar Demandas',
-                style: TextStyle(color: Colors.black87, fontSize: 20),
-              ),
-            ),
-            content: Column(
+          return AlertDialog(
+            title: const Row(
               children: [
-                Flexible(
-                  child: ListView.builder(
-                    itemCount: watch.periodos,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        title: TextField(
-              keyboardType: TextInputType.number,
-              controller: watch.controllersD[index],
-              inputFormatters: <TextInputFormatter>[
-                FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-              ],
-              decoration:  InputDecoration(
-                labelText: 'Unidades en el período: ${index + 1}',
-                border: const OutlineInputBorder(),
-              ),
-            ),
-                      );
-                    },
-                  ),
+                Icon(Icons.error, color: Colors.red),
+                Text(
+                  'Error',
+                  style: TextStyle(
+                      color: Colors.red, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
-            actions: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text(
-                      'Cerrar',
-                      style: TextStyle(color: Colors.red),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  TextButton(
-                    onPressed: () {
-                      
-                      context.read<KanbanesProvider>().getValuesD();
-                      // ignore: use_build_context_synchronously
-                      
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text('Guardar'),
-                  ),
-                ],
+            content: const Text(
+              'Agregue cantidad de períodos',
+              style: TextStyle(fontSize: 15),
+              textAlign: TextAlign.center,
+            ),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text(
+                  'Cerrar',
+                ),
               ),
             ],
           );
-          }
-          
-        });
+        },
+      );
+    } else {
+      showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        builder: (BuildContext context) {
+          final KanbanesProvider watch = Provider.of<KanbanesProvider>(context, listen: false);
+
+          return Padding(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom,
+            ),
+            child: DraggableScrollableSheet(
+              expand: false,
+              builder: (BuildContext context, ScrollController scrollController) {
+                return SingleChildScrollView(
+                  controller: scrollController,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Text(
+                          'Agregar Demandas',
+                          style: TextStyle(color: Colors.black87, fontSize: 20),
+                        ),
+                        SizedBox(height: 20),
+                        ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: watch.periodos,
+                          itemBuilder: (context, index) {
+                            return ListTile(
+                              title: TextField(
+                                keyboardType: TextInputType.number,
+                                controller: watch.controllersD[index],
+                                inputFormatters: <TextInputFormatter>[
+                                  FilteringTextInputFormatter.allow(
+                                      RegExp(r'[0-9]')),
+                                ],
+                                decoration: InputDecoration(
+                                  labelText: 'Unidades en el período: ${index + 1}',
+                                  border: const OutlineInputBorder(),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                        SizedBox(height: 20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: const Text(
+                                'Cerrar',
+                                style: TextStyle(color: Colors.red),
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Provider.of<KanbanesProvider>(context, listen: false).getValuesD();
+                                Navigator.of(context).pop();
+                              },
+                              child: const Text('Guardar'),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        },
+      );
+    }
   }
 }

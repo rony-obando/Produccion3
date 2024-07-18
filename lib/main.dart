@@ -16,6 +16,7 @@ import 'package:frontendapp/presentation/providers/numbercontainer_provider.dart
 import 'package:frontendapp/presentation/providers/planeacion_provider.dart';
 import 'package:frontendapp/presentation/providers/product_provider.dart';
 import 'package:frontendapp/presentation/providers/push_notification_provider.dart';
+import 'package:frontendapp/presentation/providers/regression_provider.dart';
 import 'package:frontendapp/presentation/screens/Menu_others.dart';
 import 'package:frontendapp/presentation/screens/login_screen.dart';
 import 'package:frontendapp/presentation/screens/menu_mrp.dart';
@@ -123,6 +124,7 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (_) => NumberContainerProvider()),
           ChangeNotifierProvider(create: (_) => KanbanesProvider()),
           ChangeNotifierProvider(create: (_) => PlaneacioProvider()),
+          ChangeNotifierProvider(create: (_) => RegressionProvider()),
           
         ],
         builder: (context, _) {
